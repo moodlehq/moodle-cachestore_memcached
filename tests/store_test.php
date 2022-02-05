@@ -14,18 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Memcached unit tests.
- *
- * If you wish to use these unit tests all you need to do is add the following definition to
- * your config.php file.
- *
- * define('TEST_CACHESTORE_MEMCACHED_TESTSERVERS', '127.0.0.1:11211');
- *
- * @package    cachestore_memcached
- * @copyright  2013 Sam Hemelryk
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace cachestore_memcached;
+
+use cache_definition;
+use cache_store;
+use cachestore_memcached;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -37,11 +30,16 @@ require_once($CFG->dirroot.'/cache/stores/memcached/lib.php');
 /**
  * Memcached unit test class.
  *
+ * If you wish to use these unit tests all you need to do is add the following definition to
+ * your config.php file.
+ *
+ * define('TEST_CACHESTORE_MEMCACHED_TESTSERVERS', '127.0.0.1:11211');
+ *
  * @package    cachestore_memcached
  * @copyright  2013 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cachestore_memcached_test extends cachestore_tests {
+class store_test extends \cachestore_tests {
     /**
      * Returns the memcached class name
      * @return string
@@ -292,13 +290,13 @@ class cachestore_memcached_test extends cachestore_tests {
             $this->markTestSkipped('Could not test cachestore_memcached. Connection is not ready.');
         }
 
-        $connection = new Memcached(crc32(__METHOD__));
+        $connection = new \Memcached(crc32(__METHOD__));
         $connection->addServers($this->get_servers(TEST_CACHESTORE_MEMCACHED_TESTSERVERS));
         $connection->setOptions(array(
-            Memcached::OPT_COMPRESSION => true,
-            Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_PHP,
-            Memcached::OPT_PREFIX_KEY => 'phpunit_',
-            Memcached::OPT_BUFFER_WRITES => false
+            \Memcached::OPT_COMPRESSION => true,
+            \Memcached::OPT_SERIALIZER => \Memcached::SERIALIZER_PHP,
+            \Memcached::OPT_PREFIX_KEY => 'phpunit_',
+            \Memcached::OPT_BUFFER_WRITES => false
         ));
 
         // We must flush first to make sure nothing is there.
@@ -311,7 +309,7 @@ class cachestore_memcached_test extends cachestore_tests {
 
         // Test the connection.
         $this->assertFalse($connection->get('test'));
-        $this->assertEquals(Memcached::RES_NOTFOUND, $connection->getResultCode());
+        $this->assertEquals(\Memcached::RES_NOTFOUND, $connection->getResultCode());
         $this->assertTrue($connection->set('test', 'connection'));
         $this->assertSame('connection', $connection->get('test'));
 
@@ -335,13 +333,13 @@ class cachestore_memcached_test extends cachestore_tests {
 
         $definition = cache_definition::load_adhoc(cache_store::MODE_APPLICATION, 'cachestore_memcached', 'phpunit_test');
         $cachestore = $this->create_test_cache_with_config($definition, array('isshared' => false));
-        $connection = new Memcached(crc32(__METHOD__));
+        $connection = new \Memcached(crc32(__METHOD__));
         $connection->addServers($this->get_servers(TEST_CACHESTORE_MEMCACHED_TESTSERVERS));
         $connection->setOptions(array(
-            Memcached::OPT_COMPRESSION => true,
-            Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_PHP,
-            Memcached::OPT_PREFIX_KEY => 'phpunit_',
-            Memcached::OPT_BUFFER_WRITES => false
+            \Memcached::OPT_COMPRESSION => true,
+            \Memcached::OPT_SERIALIZER => \Memcached::SERIALIZER_PHP,
+            \Memcached::OPT_PREFIX_KEY => 'phpunit_',
+            \Memcached::OPT_BUFFER_WRITES => false
         ));
 
         // We must flush first to make sure nothing is there.
@@ -354,7 +352,7 @@ class cachestore_memcached_test extends cachestore_tests {
 
         // Test the connection.
         $this->assertFalse($connection->get('test'));
-        $this->assertEquals(Memcached::RES_NOTFOUND, $connection->getResultCode());
+        $this->assertEquals(\Memcached::RES_NOTFOUND, $connection->getResultCode());
         $this->assertTrue($connection->set('test', 'connection'));
         $this->assertSame('connection', $connection->get('test'));
 
